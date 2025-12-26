@@ -1,0 +1,8 @@
+Flask
+tensorflow
+numpy
+pandas
+Pillow
+firebase-admin
+requests
+gunicorn
