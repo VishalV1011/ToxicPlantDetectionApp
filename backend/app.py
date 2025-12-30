@@ -2,6 +2,7 @@ import os
 import json
 import io
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 from PIL import Image, ImageOps
 from flask import Flask, jsonify, request
@@ -14,8 +15,45 @@ app = Flask(__name__)
 # --- 1. CONFIGURATION ---
 PERENUAL_API_KEY = "sk-tiQN690a1efb6d2a713302"
 PERENUAL_BASE_URL = "https://perenual.com/api/species-list"
+CSV_PATH = 'toxic_plants.csv' # Ensure this file is in the same folder
 
-# --- 2. FIREBASE CONNECTION ---
+# Global Database Cache
+plant_database = {}
+
+# --- 2. LOAD LOCAL CSV DATABASE ---
+# This loads your CSV into memory for instant O(1) lookup
+def load_csv_database():
+    global plant_database
+    try:
+        if os.path.exists(CSV_PATH):
+            df = pd.read_csv(CSV_PATH)
+            # Clean column names
+            df.columns = [c.strip().lower() for c in df.columns]
+            
+            # Build dictionary: Key = Scientific Name (lowercase)
+            for _, row in df.iterrows():
+                # Adjust these keys if your CSV headers are slightly different
+                sci_name = str(row.get('scientific name', '')).strip().lower()
+                
+                if sci_name:
+                    plant_database[sci_name] = {
+                        'common_name': row.get('common name', 'Unknown'),
+                        'scientific_name': row.get('scientific name', 'Unknown'),
+                        # Basic logic to determine if toxic based on level string
+                        'is_toxic': 'non-toxic' not in str(row.get('toxicity level', '')).lower(),
+                        'symptoms': row.get('symptoms', 'No information available.'),
+                        'poisoning_action': row.get('treatment/action', 'Consult a professional.'),
+                        'source': "Local CSV Database"
+                    }
+            print(f"✅ CSV Database Loaded: {len(plant_database)} plants.")
+        else:
+            print(f"⚠️ Warning: {CSV_PATH} not found. Using Fallbacks only.")
+    except Exception as e:
+        print(f"❌ Error loading CSV: {e}")
+
+load_csv_database()
+
+# --- 3. FIREBASE CONNECTION ---
 if not firebase_admin._apps:
     try:
         cred = credentials.Certificate("credentials.json")
@@ -28,7 +66,7 @@ if not firebase_admin._apps:
 else:
     db = firestore.client()
 
-# --- 3. LOAD AI MODEL ---
+# --- 4. LOAD AI MODEL ---
 print("⏳ Loading AI Model...")
 
 def custom_preprocess(x):
@@ -66,53 +104,68 @@ except Exception as e:
     model = None
     CLASS_NAMES = []
 
-# --- 4. DATABASE SEARCH HELPER ---
+# --- 5. DATABASE SEARCH HELPER (UPDATED) ---
 def search_database(predicted_label):
     final_response = {}
     
-    # Clean the messy Gradio name to match clean Firebase IDs
+    # 1. Clean the ID for matching
     clean_id = predicted_label.lower().strip()
-    if '(' in clean_id: # Remove parens like "Heart of Jesus (caladium...)"
+    if '(' in clean_id: # Remove parens
         try: clean_id = clean_id[clean_id.find('(')+1:clean_id.find(')')]
         except: pass
-    clean_id = clean_id.replace(" ", "_")
+    
+    # Clean ID for Firebase/API (underscores -> spaces or vice versa)
+    search_term = clean_id.replace("_", " ").strip()
+    
+    # --- LEVEL 1: CHECK LOCAL CSV (Fastest & Most Accurate) ---
+    # We try exact match first, then partial match
+    if search_term in plant_database:
+        return plant_database[search_term]
+    
+    # Fallback: Check if search_term is inside any key in the CSV
+    for key in plant_database:
+        if search_term in key or key in search_term:
+            return plant_database[key]
 
+    # --- LEVEL 2: FIREBASE ---
+    clean_id_fb = clean_id.replace(" ", "_")
     if db:
-        doc = db.collection('plants').document(clean_id).get()
+        doc = db.collection('plants').document(clean_id_fb).get()
         if doc.exists:
             final_response = doc.to_dict()
-            final_response['source'] = "Curated Database"
+            final_response['source'] = "Firebase Database"
+            return final_response
 
-    if not final_response:
-        # Fallback to API if not in Firebase
-        try:
-            params = {'key': PERENUAL_API_KEY, 'q': clean_id.replace("_", " ")}
-            resp = requests.get(PERENUAL_BASE_URL, params=params).json()
-            if resp.get('data'):
-                final_response = {
-                    "scientific_name": resp['data'][0].get('scientific_name', [predicted_label])[0],
-                    "common_name": resp['data'][0].get('common_name', predicted_label),
-                    "is_toxic": True,
-                    "symptoms": "Identified as toxic. Details pending.",
-                    "poisoning_action": "Seek medical help.",
-                    "source": "Perenual API"
-                }
-                if resp['data'][0].get('default_image'):
-                    final_response['image_url'] = resp['data'][0]['default_image'].get('regular_url')
-        except: pass
+    # --- LEVEL 3: EXTERNAL API (Perenual) ---
+    try:
+        params = {'key': PERENUAL_API_KEY, 'q': search_term}
+        resp = requests.get(PERENUAL_BASE_URL, params=params).json()
+        if resp.get('data'):
+            data = resp['data'][0]
+            final_response = {
+                "scientific_name": data.get('scientific_name', [predicted_label])[0],
+                "common_name": data.get('common_name', predicted_label),
+                "is_toxic": True, # Assume toxic if identified by this specific app
+                "symptoms": "Identified as toxic. Details pending.",
+                "poisoning_action": "Seek medical help immediately.",
+                "source": "Perenual API"
+            }
+            if data.get('default_image'):
+                final_response['image_url'] = data['default_image'].get('regular_url')
+            return final_response
+    except: pass
 
-    if not final_response:
-        final_response = {
-            "scientific_name": predicted_label,
-            "common_name": predicted_label,
-            "is_toxic": True,
-            "symptoms": "Caution advised.",
-            "poisoning_action": "Avoid ingestion.",
-            "source": "AI Prediction"
-        }
-    return final_response
+    # --- LEVEL 4: FALLBACK ---
+    return {
+        "scientific_name": predicted_label,
+        "common_name": predicted_label,
+        "is_toxic": True,
+        "symptoms": "Caution advised.",
+        "poisoning_action": "Avoid ingestion.",
+        "source": "AI Prediction Only"
+    }
 
-# --- 5. THE "BRUTE FORCE" PREDICTOR ---
+# --- 6. THE "BRUTE FORCE" PREDICTOR ---
 @app.route("/predict", methods=["POST"])
 def predict():
     if not model: return jsonify({"error": "Model not loaded"}), 500
@@ -131,17 +184,16 @@ def predict():
         
         candidates = {}
         
-        # Mode A: RAW [0, 255] (Common for EfficientNet / ResNetV2)
+        # Mode A: RAW [0, 255]
         candidates['Raw [0-255]'] = np.expand_dims(img_array, axis=0)
         
-        # Mode B: NORMALIZED [0, 1] (Common for custom CNNs)
+        # Mode B: NORMALIZED [0, 1]
         candidates['Normalized [0-1]'] = np.expand_dims(img_array / 255.0, axis=0)
         
-        # Mode C: CENTERED [-1, 1] (Standard for MobileNetV2)
+        # Mode C: CENTERED [-1, 1]
         candidates['Centered [-1 to 1]'] = np.expand_dims((img_array / 127.5) - 1.0, axis=0)
         
-        # Mode D: CAFFE [BGR, Unscaled] (Standard for ResNet50 / VGG)
-        # Convert RGB to BGR, then subtract mean
+        # Mode D: CAFFE [BGR, Unscaled]
         img_bgr = img_array[..., ::-1] 
         mean = [103.939, 116.779, 123.68]
         img_caffe = img_bgr - mean
@@ -175,7 +227,7 @@ def predict():
         else:
             plant_name = "Unknown Index"
 
-        # 5. Get Details
+        # 5. Get Details (Now checks CSV first!)
         details = search_database(plant_name)
         details['predicted_name'] = plant_name
         details['confidence'] = best_conf
