@@ -30,7 +30,7 @@ class ToxicPlantApp extends StatelessWidget {
 class ProHomePage extends StatefulWidget {
   const ProHomePage({super.key});
 
-  @override
+  @override 
   State<ProHomePage> createState() => _ProHomePageState();
 }
 
@@ -40,8 +40,8 @@ class _ProHomePageState extends State<ProHomePage> {
   bool _loading = false;
   final ImagePicker _picker = ImagePicker();
 
-  // ⚠️ UPDATE YOUR IP ADDRESS HERE
-  final String apiUrl = "http://10.157.16.180:5000/predict";
+  // ✅ CORRECT: Base URL + /predict
+  final String apiUrl = "https://toxicplantdetectionapp.onrender.com/predict";
 
   Future<void> _getImage(ImageSource source) async {
     final XFile? pickedFile = await _picker.pickImage(source: source);
@@ -54,13 +54,21 @@ class _ProHomePageState extends State<ProHomePage> {
     }
   }
 
+  // ⚠️ UPDATED FUNCTION: Increases wait time to 90 seconds
   Future<void> _uploadImage(File image) async {
     setState(() => _loading = true);
     try {
       var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
       request.files.add(await http.MultipartFile.fromPath('file', image.path));
 
-      var streamedResponse = await request.send();
+      // NEW: Explicit 90-second timeout to handle cold starts
+      var streamedResponse = await request.send().timeout(
+        const Duration(seconds: 90),
+        onTimeout: () {
+          throw Exception("Server sleeping. Please try again (Timeout).");
+        },
+      );
+      
       var response = await http.Response.fromStream(streamedResponse);
 
       if (response.statusCode == 200) {
@@ -69,7 +77,8 @@ class _ProHomePageState extends State<ProHomePage> {
         _showSnack("Server Error: ${response.statusCode}");
       }
     } catch (e) {
-      _showSnack("Connection Error. Check IP.");
+      // Shows the actual error (like Timeout) instead of generic "Check IP"
+      _showSnack("Error: ${e.toString()}");
     } finally {
       setState(() => _loading = false);
     }
