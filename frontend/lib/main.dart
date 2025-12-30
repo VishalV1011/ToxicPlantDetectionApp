@@ -44,11 +44,18 @@ class _ProHomePageState extends State<ProHomePage> {
   final String apiUrl = "https://toxicplantdetectionapp.onrender.com/predict";
 
   Future<void> _getImage(ImageSource source) async {
-    final XFile? pickedFile = await _picker.pickImage(source: source);
+    // ⚠️ NEW: Resize image to save Server RAM
+    final XFile? pickedFile = await _picker.pickImage(
+      source: source,
+      maxWidth: 800,   // Shrinks huge photos down
+      maxHeight: 800, 
+      imageQuality: 85, // Slight compression
+    );
+
     if (pickedFile != null) {
       setState(() {
         _image = File(pickedFile.path);
-        _result = null; // Clear previous results
+        _result = null; 
       });
       _uploadImage(_image!);
     }
