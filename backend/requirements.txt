@@ -1,7 +1,6 @@
 Flask
 tensorflow-cpu
 numpy
-pandas
 Pillow
 firebase-admin
 requests
