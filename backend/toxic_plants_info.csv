@@ -1,0 +1,65 @@
+id,scientific_name,common_name,poisoning_action,symptoms,image_folder
+1,Antiaris toxicaria,Upas tree,"Ingestion; topical (latex)","Cardiotoxicity, vomiting, weakness, arrhythmia",dataset/toxic_plants/antiaris_toxicaria
+2,Caladium bicolor,"Caladium (elephant ear)","Touch; ingestion","Oral irritation, swelling, drooling, vomiting",dataset/toxic_plants/caladium_bicolor
+3,Cerbera odollam,"Suicide tree / Sea mango",Ingestion,"Severe cardiotoxicity, vomiting, bradycardia, possible death",dataset/toxic_plants/cerbera_odollam
+4,Strychnos nux-vomica,Nux vomica,Ingestion,"Strychnine poisoning: muscle spasms, convulsions, respiratory failure",dataset/toxic_plants/strychnos_nux-vomica
+5,Excoecaria cochinchinensis,"Painted-leaf / Blind-your-eye mangrove","Contact; ingestion","Skin irritation/dermatitis; ingestion: GI upset",dataset/toxic_plants/excoecaria_cochinchinensis
+6,Dieffenbachia seguine,Dumb cane,"Touch; ingestion","Oral burning, swelling, difficulty breathing",dataset/toxic_plants/dieffenbachia_seguine
+7,Alocasia macrorrhizos,Giant taro,"Touch; ingestion","Oral irritation, swelling, vomiting, difficulty swallowing",dataset/toxic_plants/alocasia_macrorrhizos
+8,Monstera deliciosa,Swiss cheese plant,"Touch; ingestion","Oral irritation, swelling, vomiting",dataset/toxic_plants/monstera_deliciosa
+9,Aloe vera,Aloe vera,"Ingestion (large amounts); topical may irritate","Diarrhea, abdominal pain; topical irritation in sensitive individuals",dataset/toxic_plants/aloe_vera
+10,Lantana camara,Lantana,Ingestion,"Liver damage, photosensitivity, vomiting (especially in livestock)",dataset/toxic_plants/lantana_camara
+11,Erythrina suberosa,"Coral tree / Erythrina",Ingestion,"Neurotoxic effects, vomiting, weakness",dataset/toxic_plants/erythrina_suberosa
+12,Nerium oleander,Oleander,Ingestion,"Cardiotoxicity, vomiting, arrhythmia, possible death",dataset/toxic_plants/nerium_oleander
+13,Jatropha curcas,"Physic nut (Jatropha)",Ingestion,"Vomiting, diarrhea, abdominal pain; dehydration risk",dataset/toxic_plants/jatropha_curcas
+14,Acalypha indica,"Acalypha (Indian nettle)","Ingestion; contact","GI upset, possible dermatitis",dataset/toxic_plants/acalypha_indica
+15,Barringtonia asiatica,Sea poison tree,Ingestion,"Cardiotoxicity, vomiting, respiratory distress",dataset/toxic_plants/barringtonia_asiatica
+16,Brugmansia suaveolens,"Angel's trumpet (Brugmansia)","Ingestion; inhalation","Anticholinergic effects: hallucination, dry mouth, tachycardia, delirium",dataset/toxic_plants/brugmansia_suaveolens
+17,Zamioculcas zamiifolia,ZZ plant,"Ingestion; contact","Oral irritation, vomiting, diarrhea",dataset/toxic_plants/zamioculcas_zamiifolia
+18,Xanthium strumarium,Cocklebur,Ingestion,"Liver damage (esp. in young animals), vomiting, weakness",dataset/toxic_plants/xanthium_strumarium
+19,Adenium obesum,Desert rose,"Ingestion; contact","Cardiotoxicity, vomiting",dataset/toxic_plants/adenium_obesum
+20,Abrus precatorius,Rosary pea,Ingestion,"Abrin poisoning: severe GI distress, systemic failure, possible death",dataset/toxic_plants/abrus_precatorius
+21,Ricinus communis,Castor bean,Ingestion,"Ricin poisoning: severe GI, organ failure, can be fatal",dataset/toxic_plants/ricinus_communis
+22,Manihot esculenta,Cassava,"Ingestion (improperly processed)","Cyanide (cyanogenic glycosides) risk: headache, dizziness, respiratory distress",dataset/toxic_plants/manihot_esculenta
+23,Colocasia esculenta,Taro,"Touch; ingestion (raw)","Oral irritation, swelling, vomiting",dataset/toxic_plants/colocasia_esculenta
+24,Euphorbia tirucalli,"Pencil tree / Euphorbia","Contact; ingestion","Severe eye irritation, skin dermatitis, GI upset",dataset/toxic_plants/euphorbia_tirucalli
+25,Euphorbia milii,Crown of thorns,"Contact; ingestion","Skin irritation, eye irritation, vomiting",dataset/toxic_plants/euphorbia_milii
+26,Amanita phalloides,"Death cap (mushroom)",Ingestion,"Severe hepatotoxicity: vomiting, diarrhea, liver failure; can be fatal",dataset/toxic_plants/amanita_phalloides
+27,Clerodendrum inerme,Seaside clerodendrum,"Contact; ingestion","GI upset, dermatitis in sensitive individuals",dataset/toxic_plants/clerodendrum_inerme
+28,Araceae spp.,Araceae family,"Contact; ingestion","Oral irritation, swelling, severe pain from calcium oxalate crystals",dataset/toxic_plants/araceae_spp
+29,Thevetia peruviana,Yellow oleander,Ingestion,"Cardiotoxicity, vomiting, arrhythmia, possible death",dataset/toxic_plants/thevetia_peruviana
+30,Datura metel,Datura,"Ingestion; inhalation","Anticholinergic delirium: hallucinations, tachycardia, hyperthermia, seizures",dataset/toxic_plants/datura_metel
+31,Ipomoea carnea,"Ipomoea carnea (bush morning glory)",Ingestion,"Toxic to livestock: GI upset, possible neuro signs",dataset/toxic_plants/ipomoea_carnea
+32,Croton tiglium,Croton,"Ingestion; contact","Severe GI irritation, vomiting, burning; strong irritant",dataset/toxic_plants/croton_tiglium
+33,Melia azedarach,Chinaberry,Ingestion,"Neurotoxicity, vomiting, diarrhea",dataset/toxic_plants/melia_azedarach
+34,Gloriosa superba,Glory lily,Ingestion,"Colchicine poisoning: GI upset, alopecia, multi-organ failure",dataset/toxic_plants/gloriosa_superba
+35,Solanum nigrum,Black nightshade,Ingestion,"GI upset; solanine-related neuro signs in severe cases",dataset/toxic_plants/solanum_nigrum
+36,Physalis minima,"Ground cherry / Physalis",Ingestion,"GI upset; some reports of toxicity when unripe",dataset/toxic_plants/physalis_minima
+37,Calotropis gigantea,Crown flower,"Contact; ingestion","Skin irritation; ingestion: nausea, vomiting, cardiac effects",dataset/toxic_plants/calotropis_gigantea
+38,Aristolochia tagala,Aristolochia,"Ingestion (traditional use)","Nephrotoxicity, carcinogenicity; potential kidney failure (aristolochic acid)",dataset/toxic_plants/aristolochia_tagala
+39,Cassia occidentalis,Coffee senna,Ingestion,"Hepatotoxicity in livestock/children, vomiting, lethargy",dataset/toxic_plants/cassia_occidentalis
+40,Senna alata,Candle bush,"Ingestion; topical use","GI upset; topical may irritate in some",dataset/toxic_plants/senna_alata
+41,Nicotiana tabacum,Tobacco,"Ingestion; inhalation; dermal","Nicotine poisoning: nausea, tachycardia, dizziness, respiratory depression",dataset/toxic_plants/nicotiana_tabacum
+42,Arenga pinnata,Sugar palm,?,(?),dataset/toxic_plants/Arenga_pinnata
+43,Pachypodium lamerei,Madagascar palm,"Contact; ingestion","Skin irritation, GI upset; some Pachypodium species contain cardiac glycosides",dataset/toxic_plants/pachypodium_lamerei
+44,Heliconia rostrata,Heliconia,"Contact; ingestion","Generally considered non-toxic or mild irritation — VERIFY",dataset/toxic_plants/heliconia_rostrata
+45,Allamanda cathartica,Allamanda,Ingestion,"Vomiting, diarrhea; cathartic effects",dataset/toxic_plants/allamanda_cathartica
+46,Dioscorea hispida,"Intoxicating yam (Dioscorea)","Ingestion (raw)","GI upset, possible neurotoxic effects if unprocessed",dataset/toxic_plants/dioscorea_hispida
+47,Codiaeum variegatum,Garden croton,"Contact; ingestion","Skin irritation, vomiting",dataset/toxic_plants/codiaeum_variegatum
+48,Manihot glaziovii,Wild cassava,"Ingestion (improperly processed)","Cyanide poisoning risk (similar to cassava)",dataset/toxic_plants/manihot_glaziovii
+49,Asclepias curassavica,Tropical milkweed,"Ingestion; contact","Cardenolide toxicity: vomiting, cardiac signs",dataset/toxic_plants/asclepias_curassavica
+50,Aristolochia ringens,Aristolochia ringens,"Ingestion (traditional use)","Nephrotoxicity, carcinogenicity — VERIFY; contains aristolochic acids",dataset/toxic_plants/aristolochia_ringens
+51,Euphorbia heterophylla,"Mexican fireplant (Euphorbia)","Contact; ingestion","Skin and eye irritation, GI upset",dataset/toxic_plants/euphorbia_heterophylla
+52,Toxicodendron radicans,Poison ivy,Contact,"Allergic contact dermatitis: itching, blistering rash",dataset/toxic_plants/toxicodendron_radicans
+53,Anacardium occidentale,Cashew Nut Tree,"Contact (shell oil); ingestion (raw nut)","Severe allergic dermatitis, blistering (Urushiol)",dataset/toxic_plants/anacardium_occidentale
+54,Annona muricata,Soursop,"Ingestion (seeds/roots)","Neurotoxicity, movement disorders (if consumed in excess)",dataset/toxic_plants/annona_muricata
+55,Annona squamosa,"Sugar apple / Sweetsop","Ingestion (seeds)","Toxic seeds, eye irritant if rubbed",dataset/toxic_plants/annona_squamosa
+56,Euphorbia hirta,Asthma-plant,"Ingestion; contact","GI upset, skin irritation from latex",dataset/toxic_plants/euphorbia_hirta
+57,Excoecaria agallocha,Milky mangrove,"Contact (latex); ingestion","Severe eye irritation (blindness risk), skin blistering",dataset/toxic_plants/excoecaria_agallocha
+58,Euphorbia tithymaloides,Devil's backbone,"Contact; ingestion","Skin irritation, vomiting, diarrhea",dataset/toxic_plants/euphorbia_tithymaloides
+59,Kigelia africana,Sausage tree,"Ingestion (unripe fruit)","Purgative effect, blistering in mouth if raw",dataset/toxic_plants/kigelia_africana
+60,Phytolacca octandra,Inkweed,"Ingestion (berries/roots)","Vomiting, diarrhea, convulsions (contains saponins)",dataset/toxic_plants/phytolacca_octandra
+61,Sterculia foetida,Bastard poon tree,"Ingestion (raw seeds)","Cathartic/laxative effect, nausea",dataset/toxic_plants/sterculia_foetida
+62,Ayushvision flowers,Generic Flower Dataset,Unknown,"Requires specific identification (Generic Entry)",dataset/toxic_plants/ayushvision_flowers
+63,Poisonous American Mushrooms,Wild Toxic Mushrooms,Ingestion,"Varies: can range from GI upset to fatal organ failure",dataset/toxic_plants/poisonous_american_mushrooms
+64,Physalis angulata,Wild gooseberry,"Ingestion (unripe)","GI upset, potential toxicity if consumed raw/unripe",dataset/toxic_plants/wild_gooseberry

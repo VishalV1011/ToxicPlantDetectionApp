@@ -1,0 +1,28 @@
+{
+  "nativeName": "Español",
+  "name": "es",
+  "data": {
+    "app_title": "FloraGuard",
+    "scan_plant": "Escanear una planta",
+    "camera": "Cámara",
+    "gallery": "Galería",
+    "settings": "Configuración de idioma",
+    "download": "Descargar",
+    "installed": "Instalado",
+    "active": "Activo",
+    "switch": "Cambiar",
+    "loading": "Analizando...",
+    "toxic": "PLANTA TÓXICA",
+    "confidence": "Confianza",
+    "symptoms": "SÍNTOMAS",
+    "action": "PRIMEROS AUXILIOS",
+    "safe": "PROBABLEMENTE SEGURO",
+    "safe_title": "No se detectó ninguna planta tóxica",
+    "safe_analysis": "ANÁLISIS",
+    "safe_advice": "RECOMENDACIÓN",
+    "safe_body_text": "La imagen no coincide con alta confianza con ninguna planta tóxica conocida en nuestra base de datos.",
+    "safe_action_text": "Probablemente seguro. Sin embargo, nunca ingiera plantas desconocidas.",
+    "source_label": "Fuente",
+    "safe_body_plantnet": "Identificado como probablemente seguro o no tóxico mediante análisis visual."
+  }
+}

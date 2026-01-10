@@ -1,0 +1,36 @@
+name: frontend
+description: "A new Flutter project."
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.10.4 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Existing packages
+  image_picker: ^1.0.4
+  http: ^1.1.0
+  cupertino_icons: ^1.0.8
+
+  # ⚠️ NEW PACKAGES FOR LANGUAGE & AUDIO
+  provider: ^6.1.1        # State Management
+  shared_preferences: ^2.2.2 # To remember language choice
+  path_provider: ^2.1.2    # To save downloaded language files
+  audioplayers: ^6.0.0     # 🔔 NEW: To play audio on phone
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+
+  # 🔔 NEW: Register the assets folder here
+  assets:
+    - assets/toxic.wav
+    - assets/non_toxic.wav

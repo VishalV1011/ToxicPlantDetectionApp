@@ -1,0 +1,28 @@
+{
+  "nativeName": "Bahasa Indonesia",
+  "name": "id",
+  "data": {
+    "app_title": "FloraGuard",
+    "scan_plant": "Pindai Tanaman",
+    "camera": "Kamera",
+    "gallery": "Galeri",
+    "settings": "Pengaturan Bahasa",
+    "download": "Unduh",
+    "installed": "Dipasang",
+    "active": "Aktif",
+    "switch": "Mengalihkan",
+    "loading": "Menganalisis...",
+    "toxic": "TANAMAN BERACUN",
+    "confidence": "Kepercayaan diri",
+    "symptoms": "GEJALA",
+    "action": "PERTOLONGAN PERTAMA",
+    "safe": "KEMUNGKINAN AMAN",
+    "safe_title": "Tidak Ada Tanaman Beracun yang Terdeteksi",
+    "safe_analysis": "ANALISA",
+    "safe_advice": "REKOMENDASI",
+    "safe_body_text": "Gambar tersebut tidak cocok dengan tanaman beracun mana pun yang diketahui di database kami dengan keyakinan tinggi.",
+    "safe_action_text": "Kemungkinan besar aman. Namun, jangan pernah menelan tanaman yang tidak dikenal.",
+    "source_label": "Sumber",
+    "safe_body_plantnet": "Diidentifikasi sebagai kemungkinan aman atau tidak beracun melalui analisis visual."
+  }
+}

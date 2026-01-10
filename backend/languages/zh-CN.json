@@ -1,0 +1,28 @@
+{
+  "nativeName": "中文",
+  "name": "zh-CN",
+  "data": {
+    "app_title": "FloraGuard",
+    "scan_plant": "扫描植物",
+    "camera": "相机",
+    "gallery": "画廊",
+    "settings": "语言设置",
+    "download": "下载",
+    "installed": "已安装",
+    "active": "积极的",
+    "switch": "转变",
+    "loading": "正在分析...",
+    "toxic": "有毒植物",
+    "confidence": "信心",
+    "symptoms": "症状",
+    "action": "急救",
+    "safe": "可能安全",
+    "safe_title": "未检测到有毒植物",
+    "safe_analysis": "分析",
+    "safe_advice": "推荐",
+    "safe_body_text": "该图像与我们数据库中任何已知的有毒植物都不具有高可信度。",
+    "safe_action_text": "可能安全。但是，切勿摄入未知植物。",
+    "source_label": "来源",
+    "safe_body_plantnet": "通过目视分析确定可能安全或无毒。"
+  }
+}

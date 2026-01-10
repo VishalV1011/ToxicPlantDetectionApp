@@ -1,0 +1,28 @@
+{
+  "nativeName": "Bahasa Melayu",
+  "name": "ms",
+  "data": {
+    "app_title": "FloraGuard",
+    "scan_plant": "Imbas Tumbuhan",
+    "camera": "Kamera",
+    "gallery": "Galeri",
+    "settings": "Tetapan Bahasa",
+    "download": "Muat turun",
+    "installed": "Dipasang",
+    "active": "Aktif",
+    "switch": "Tukar",
+    "loading": "Menganalisis...",
+    "toxic": "TUMBUHAN TOKSIK",
+    "confidence": "Keyakinan",
+    "symptoms": "SIMPTOM",
+    "action": "PERTOLONGAN CEMAS",
+    "safe": "MUNGKIN SELAMAT",
+    "safe_title": "Tiada Tumbuhan Toksik Dikesan",
+    "safe_analysis": "ANALISIS",
+    "safe_advice": "CADANGAN",
+    "safe_body_text": "Imej tidak sepadan dengan mana-mana tumbuhan toksik yang diketahui dalam pangkalan data kami dengan keyakinan tinggi.",
+    "safe_action_text": "Berkemungkinan selamat. Walau bagaimanapun, jangan sekali-kali menelan tumbuhan yang tidak diketahui.",
+    "source_label": "Sumber",
+    "safe_body_plantnet": "Dikenal pasti sebagai mungkin selamat atau tidak toksik melalui analisis visual."
+  }
+}
