@@ -41,6 +41,11 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 # 🚀 GLOBAL EXECUTOR
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=3)
 
+# --- 🟢 GLOBAL VARIABLES FOR LAZY LOADING ---
+# We initialize them as None so they don't consume memory at startup
+model = None
+CLASS_NAMES = []
+
 # --- HELPER: CHECK FILE EXTENSION ---
 def allowed_file(filename):
     return '.' in filename and \
@@ -141,12 +146,11 @@ def identify_with_plantnet(image_bytes):
 print("⏳ Connecting to Firebase...")
 if not firebase_admin._apps:
     try:
-        # 🟢 NEW LOGIC: Check for Environment Variable first (For Render Deployment)
+        # Check for Environment Variable first (For Render Deployment)
         env_creds = os.environ.get('GOOGLE_CREDENTIALS')
         
         if env_creds:
             print("☁️ Found GOOGLE_CREDENTIALS env var. Loading from string...")
-            # Parse the JSON string from the environment variable
             cred_dict = json.loads(env_creds)
             cred = credentials.Certificate(cred_dict)
         else:
@@ -164,40 +168,55 @@ else:
     db = firestore.client()
     print("✅ Firebase Connected")
 
-def custom_preprocess(x): return x
-try:
-    with open("config.json", "r") as f: json_config = f.read()
-    model = tf.keras.models.model_from_json(json_config, custom_objects={'preprocess_input': custom_preprocess})
-    model.load_weights("model.weights.h5")
-    CLASS_NAMES = [
-        'Abrus precatorius', 'Acalypha indica', 'Anacardium occidentale', 'Annona_muricata', 
-        'Annona_squamosa', 'Aristolochia tagala', 'Asthma-plant (Euphorbia hirta)', 
-        'Ayushvision_flowers', 'Blind-your-eye Mangrove (Excoecaria agallocha)', 'Cerbera_odollam', 
-        'Clerodendrum inerme', 'Croton tiglium', 'Devil backbone(euphorbia tithymaloides)', 
-        'Dioscorea hispida Dennst', 'Euphorbia Milli', 'Heart of Jesus (caladium bicolor)', 
-        'Kigelia_africana', 'Oleander', 'Pencil tree (euphorbia tirucalli)', 'Phytolacca_octandra', 
-        'Poisonous American Mushrooms', 'Senna Alata', 'Solanum nigrum', 'Sterculia_foetida', 
-        'Strychnos_nux-vomica', 'adenium obesum', 'aloe vera', 'heliconia rostrata', 
-        'poisen ivy', 'wild gooseberry'
-    ]
-except: model = None; CLASS_NAMES = []
 
-# --- 5. SEARCH LOGIC ---
-def search_database(predicted_label, lang_code='en'):
-    # 1. Clean the ID logic
-    clean_id = predicted_label.lower().strip()
+# --- 🟢 5. NEW: LAZY LOAD MODEL FUNCTION ---
+# This function loads the model only when needed, not at startup.
+def get_model():
+    global model, CLASS_NAMES
     
-    # Handle parens (e.g., "Pencil tree (euphorbia tirucalli)" -> "euphorbia tirucalli")
+    # If model is already loaded, return it immediately
+    if model is not None:
+        return model
+    
+    print("⏳ Lazy Loading TensorFlow Model...")
+    try:
+        def custom_preprocess(x): return x
+        with open("config.json", "r") as f: json_config = f.read()
+        loaded_model = tf.keras.models.model_from_json(json_config, custom_objects={'preprocess_input': custom_preprocess})
+        loaded_model.load_weights("model.weights.h5")
+        
+        # Load Class Names
+        CLASS_NAMES = [
+            'Abrus precatorius', 'Acalypha indica', 'Anacardium occidentale', 'Annona_muricata', 
+            'Annona_squamosa', 'Aristolochia tagala', 'Asthma-plant (Euphorbia hirta)', 
+            'Ayushvision_flowers', 'Blind-your-eye Mangrove (Excoecaria agallocha)', 'Cerbera_odollam', 
+            'Clerodendrum inerme', 'Croton tiglium', 'Devil backbone(euphorbia tithymaloides)', 
+            'Dioscorea hispida Dennst', 'Euphorbia Milli', 'Heart of Jesus (caladium bicolor)', 
+            'Kigelia_africana', 'Oleander', 'Pencil tree (euphorbia tirucalli)', 'Phytolacca_octandra', 
+            'Poisonous American Mushrooms', 'Senna Alata', 'Solanum nigrum', 'Sterculia_foetida', 
+            'Strychnos_nux-vomica', 'adenium obesum', 'aloe vera', 'heliconia rostrata', 
+            'poisen ivy', 'wild gooseberry'
+        ]
+        
+        model = loaded_model
+        print("✅ Model Loaded Successfully!")
+        return model
+    except Exception as e:
+        print(f"❌ Failed to load model: {e}")
+        return None
+
+
+# --- 6. SEARCH LOGIC ---
+def search_database(predicted_label, lang_code='en'):
+    # Clean the ID logic
+    clean_id = predicted_label.lower().strip()
     if '(' in clean_id: 
         clean_id = clean_id[clean_id.find('(')+1:clean_id.find(')')].strip()
-    
-    # Replace spaces with underscores to match Firebase IDs
     clean_id = clean_id.replace(' ', '_')
     
-    # 2. CHECK FIREBASE
     if db is not None:
         try:
-            print(f"🔎 Checking Firebase for ID: '{clean_id}'") # Debug print
+            print(f"🔎 Checking Firebase for ID: '{clean_id}'") 
             doc_ref = db.collection('plants').document(clean_id)
             doc = doc_ref.get()
             
@@ -205,7 +224,6 @@ def search_database(predicted_label, lang_code='en'):
                 print(f"🔥 Found in Firebase: {clean_id}")
                 data = doc.to_dict()
                 
-                # Helper to get value with on-the-fly translation
                 def get_val(key):
                     target_key = f"{key}_{lang_code}"
                     if lang_code != 'en' and target_key in data and data[target_key]:
@@ -218,16 +236,15 @@ def search_database(predicted_label, lang_code='en'):
                     "common_name": get_val('common_name'),
                     "symptoms": get_val('symptoms'),
                     "poisoning_action": get_val('poisoning_action'),
-                    "is_toxic": True, # Force Toxic if found
+                    "is_toxic": True,
                     "source": "Firebase Database",
                     "reference_image": data.get('image_folder', None)
                 }
             else:
-                print(f"⚠️ Not found in Firebase: '{clean_id}'") # Debug print
+                print(f"⚠️ Not found in Firebase: '{clean_id}'")
         except Exception as e:
             print(f"❌ Firebase Check Failed: {e}")
 
-    # 3. NOT FOUND -> RETURN SAFE/UNKNOWN
     base_symptoms = "Caution advised. Exact symptoms unknown."
     base_action = "Avoid ingestion. Seek medical help."
     
@@ -240,7 +257,7 @@ def search_database(predicted_label, lang_code='en'):
         "source": "AI Prediction"
     }
 
-# --- 6. ROUTES ---
+# --- 7. ROUTES ---
 @app.route('/languages', methods=['GET'])
 def list_languages():
     return jsonify([
@@ -268,7 +285,6 @@ def test_extract(plant_name):
     if not db:
         return jsonify({"error": "Firebase not connected"}), 500
     try:
-        # Match the logic in search_database
         clean_id = plant_name.lower().strip().replace(' ', '_')
         if '(' in clean_id: 
              clean_id = clean_id[clean_id.find('(')+1:clean_id.find(')')].strip().replace(' ', '_')
@@ -292,10 +308,15 @@ def test_extract(plant_name):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# --- 7. PREDICTION ENDPOINT ---
+# --- 8. PREDICTION ENDPOINT ---
 @app.route("/predict", methods=["POST"])
 def predict():
-    if not model: return jsonify({"error": "Model failed"}), 500
+    # 🟢 CALL LAZY LOAD FUNCTION
+    active_model = get_model()
+    
+    if not active_model: 
+        return jsonify({"error": "Model failed to load. Server might be overloaded."}), 500
+        
     if 'file' not in request.files: return jsonify({"error": "No file"}), 400
     
     user_lang = request.args.get('lang') or request.form.get('lang') or 'en'
@@ -317,7 +338,9 @@ def predict():
         img_array = np.array(img, dtype=np.float32)
 
         input_norm = np.expand_dims(img_array / 255.0, axis=0)
-        preds = model.predict(input_norm, verbose=0)
+        
+        # Use active_model to predict
+        preds = active_model.predict(input_norm, verbose=0)
         best_conf = float(np.max(preds))
         best_idx = np.argmax(preds)
 
