@@ -137,11 +137,23 @@ def identify_with_plantnet(image_bytes):
         print(f"⚠️ Pl@ntNet Exception: {e}")
     return None
 
-# --- 4. LOAD FIREBASE ONLY ---
+# --- 4. LOAD FIREBASE ONLY (UPDATED FOR RENDER) ---
 print("⏳ Connecting to Firebase...")
 if not firebase_admin._apps:
     try:
-        cred = credentials.Certificate("credentials.json")
+        # 🟢 NEW LOGIC: Check for Environment Variable first (For Render Deployment)
+        env_creds = os.environ.get('GOOGLE_CREDENTIALS')
+        
+        if env_creds:
+            print("☁️ Found GOOGLE_CREDENTIALS env var. Loading from string...")
+            # Parse the JSON string from the environment variable
+            cred_dict = json.loads(env_creds)
+            cred = credentials.Certificate(cred_dict)
+        else:
+            # Fallback to local file (For Local Development)
+            print("📂 GOOGLE_CREDENTIALS not found. Looking for 'credentials.json'...")
+            cred = credentials.Certificate("credentials.json")
+
         firebase_admin.initialize_app(cred)
         db = firestore.client()
         print("✅ Firebase Connected")
@@ -170,7 +182,7 @@ try:
     ]
 except: model = None; CLASS_NAMES = []
 
-# --- 5. SEARCH LOGIC (FIXED FOR FIREBASE KEYS) ---
+# --- 5. SEARCH LOGIC ---
 def search_database(predicted_label, lang_code='en'):
     # 1. Clean the ID logic
     clean_id = predicted_label.lower().strip()
@@ -179,8 +191,7 @@ def search_database(predicted_label, lang_code='en'):
     if '(' in clean_id: 
         clean_id = clean_id[clean_id.find('(')+1:clean_id.find(')')].strip()
     
-    # 🛑 CRITICAL FIX: Replace spaces with underscores to match Firebase IDs
-    # "euphorbia tirucalli" -> "euphorbia_tirucalli"
+    # Replace spaces with underscores to match Firebase IDs
     clean_id = clean_id.replace(' ', '_')
     
     # 2. CHECK FIREBASE
