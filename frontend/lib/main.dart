@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:audioplayers/audioplayers.dart'; // 🔔 Audio Support
 
 // ⚠️ CONFIGURATION: YOUR IP ADDRESS
-const String SERVER_URL = "http://10.200.97.43:5000";
+const String SERVER_URL = "https://toxicplantdetectionapp.onrender.com";
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
